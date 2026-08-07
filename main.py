@@ -35,6 +35,9 @@ def main():
     chain_id = web3.eth.chain_id
     print(f"Chain ID: {chain_id}")
 
+    block_number = web3.eth.block_number
+    print(f"Latest block: {block_number}")
+
     balance = get_balance(address)
 
     print(f"Balance: {balance} ETH")
