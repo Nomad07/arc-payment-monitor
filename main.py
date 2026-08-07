@@ -1,8 +1,17 @@
-def check_address(address):
-    if address.startswith("0x") and len(address) == 42:
-        return True
+from web3 import Web3
 
-    return False
+RPC_URL = "https://rpc.testnet.arc.network"
+
+web3 = Web3(Web3.HTTPProvider(RPC_URL))
+
+
+def check_address(address):
+    return Web3.is_address(address)
+
+
+def get_balance(address):
+    balance = web3.eth.get_balance(address)
+    return web3.from_wei(balance, "ether")
 
 
 def main():
@@ -11,10 +20,21 @@ def main():
 
     address = input("Enter Arc wallet address: ")
 
-    if check_address(address):
-        print("Valid wallet address")
-    else:
+    if not check_address(address):
         print("Invalid wallet address")
+        return
+
+    print("Valid wallet address")
+
+    if not web3.is_connected():
+        print("Could not connect to Arc RPC")
+        return
+
+    print("Connected to Arc")
+
+    balance = get_balance(address)
+
+    print(f"Balance: {balance} ETH")
 
 
 if __name__ == "__main__":
