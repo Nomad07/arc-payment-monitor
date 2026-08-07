@@ -32,6 +32,9 @@ def main():
 
     print("Connected to Arc")
 
+    chain_id = web3.eth.chain_id
+    print(f"Chain ID: {chain_id}")
+
     balance = get_balance(address)
 
     print(f"Balance: {balance} ETH")
