@@ -33,6 +33,7 @@ def main():
     print("Connected to Arc")
 
     chain_id = web3.eth.chain_id
+    print("Network: Arc")
     print(f"Chain ID: {chain_id}")
 
     block_number = web3.eth.block_number
