@@ -75,6 +75,8 @@ def main():
     balance = get_balance(address)
     print(f"Balance: {balance} ETH")
 
+    print("Checking USDC...")
+
     usdc_balance = get_usdc_balance(address)
     print(f"USDC Balance: {usdc_balance}")
 
