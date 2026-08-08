@@ -4,6 +4,25 @@ RPC_URL = "https://rpc.testnet.arc.network"
 
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
 
+USDC_ADDRESS = "0x3600000000000000000000000000000000000000"
+
+USDC_ABI = [
+    {
+        "constant": True,
+        "inputs": [{"name": "account", "type": "address"}],
+        "name": "balanceOf",
+        "outputs": [{"name": "", "type": "uint256"}],
+        "type": "function",
+    },
+    {
+        "constant": True,
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [{"name": "", "type": "uint8"}],
+        "type": "function",
+    },
+]
+
 
 def check_address(address):
     return Web3.is_address(address)
@@ -41,7 +60,21 @@ def main():
 
     balance = get_balance(address)
 
+    def get_usdc_balance(address):
+    contract = web3.eth.contract(
+        address=Web3.to_checksum_address(USDC_ADDRESS),
+        abi=USDC_ABI
+    )
+
+    raw_balance = contract.functions.balanceOf(address).call()
+    decimals = contract.functions.decimals().call()
+
+    return raw_balance / (10 ** decimals)
+
     print(f"Balance: {balance} ETH")
+
+    usdc_balance = get_usdc_balance(address)
+    print(f"USDC Balance: {usdc_balance}")
 
 
 if __name__ == "__main__":
