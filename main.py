@@ -33,6 +33,18 @@ def get_balance(address):
     return web3.from_wei(balance, "ether")
 
 
+def get_usdc_balance(address):
+    contract = web3.eth.contract(
+        address=Web3.to_checksum_address(USDC_ADDRESS),
+        abi=USDC_ABI,
+    )
+
+    raw_balance = contract.functions.balanceOf(address).call()
+    decimals = contract.functions.decimals().call()
+
+    return raw_balance / (10 ** decimals)
+
+
 def main():
     print("Arc Wallet Checker")
     print("------------------")
@@ -42,6 +54,8 @@ def main():
     if not check_address(address):
         print("Invalid wallet address")
         return
+
+    address = Web3.to_checksum_address(address)
 
     print("Valid wallet address")
 
@@ -59,18 +73,6 @@ def main():
     print(f"Latest block: {block_number}")
 
     balance = get_balance(address)
-
-    def get_usdc_balance(address):
-    contract = web3.eth.contract(
-        address=Web3.to_checksum_address(USDC_ADDRESS),
-        abi=USDC_ABI
-    )
-
-    raw_balance = contract.functions.balanceOf(address).call()
-    decimals = contract.functions.decimals().call()
-
-    return raw_balance / (10 ** decimals)
-
     print(f"Balance: {balance} ETH")
 
     usdc_balance = get_usdc_balance(address)
