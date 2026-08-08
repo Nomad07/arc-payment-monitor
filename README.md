@@ -31,9 +31,9 @@ Install the required dependency:
 pip install -r requirements.txt
 ```
 
-## Usage
+## How to Run
 
-Run the wallet checker:
+Run the application:
 
 ```bash
 python main.py
@@ -41,9 +41,7 @@ python main.py
 
 Enter your Arc wallet address when prompted.
 
-The application will validate the address, connect to the Arc network, and display the current wallet information.
-
-## Example Output
+## Example
 
 ```text
 Arc Wallet Checker
@@ -64,23 +62,15 @@ USDC Balance: 41.796567
 ```text
 arc-wallet-checker/
 ├── .gitignore
+├── LICENSE
 ├── README.md
 ├── main.py
 └── requirements.txt
 ```
 
-## Network
-
-The project connects to the Arc testnet through the official Arc RPC endpoint.
-
-Chain ID:
-
-```text
-5042002
-```
-
 ## License
 
 This project is licensed under the MIT License.
+
 
 
