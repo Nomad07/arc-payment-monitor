@@ -1,10 +1,9 @@
 from web3 import Web3
 
 RPC_URL = "https://rpc.testnet.arc.network"
+USDC_ADDRESS = "0x3600000000000000000000000000000000000000"
 
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
-
-USDC_ADDRESS = "0x3600000000000000000000000000000000000000"
 
 USDC_ABI = [
     {
@@ -28,7 +27,7 @@ def check_address(address):
     return Web3.is_address(address)
 
 
-def get_balance(address):
+def get_native_usdc_balance(address):
     balance = web3.eth.get_balance(address)
     return web3.from_wei(balance, "ether")
 
@@ -72,10 +71,8 @@ def main():
     block_number = web3.eth.block_number
     print(f"Latest block: {block_number}")
 
-    balance = get_balance(address)
-    print(f"Balance: {balance} ETH")
-
-    print("Checking USDC...")
+    native_balance = get_native_usdc_balance(address)
+    print(f"Native USDC Balance: {native_balance}")
 
     usdc_balance = get_usdc_balance(address)
     print(f"USDC Balance: {usdc_balance}")
