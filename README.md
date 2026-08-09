@@ -1,20 +1,31 @@
 # Arc Wallet Checker
 
-A simple Python tool for checking wallet information on the Arc network.
+A lightweight Python utility for checking wallet information on the **Arc network**.
+
+[![Python](https://img.shields.io/badge/Python-3.12+-blue?logo=python\&logoColor=white)](https://www.python.org/)
+[![Network](https://img.shields.io/badge/Network-Arc-black)](https://arc.network/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+## Overview
+
+**Arc Wallet Checker** is a simple command-line tool built with Python and `web3.py`.
+
+It connects directly to the Arc RPC and displays basic information about an Arc wallet, including its network status, chain ID, latest block, and USDC balance.
 
 ## Features
 
-* Validate an Arc wallet address
-* Connect to the Arc RPC
-* Display the Arc chain ID
-* Display the latest block number
-* Check the native USDC balance
-* Check the USDC token balance
+* ✅ Validate an Arc wallet address
+* 🔗 Connect to the Arc RPC
+* 🌐 Display the Arc network
+* 🔢 Display the Arc chain ID
+* 📦 Display the latest block number
+* 💰 Check the USDC balance
+* ⚡ Lightweight command-line interface
 
 ## Requirements
 
 * Python 3.12+
-* web3.py
+* `web3.py`
 
 ## Installation
 
@@ -31,7 +42,7 @@ Install the required dependency:
 pip install -r requirements.txt
 ```
 
-## How to Run
+## Usage
 
 Run the application:
 
@@ -52,8 +63,7 @@ Valid wallet address
 Connected to Arc
 Network: Arc
 Chain ID: 5042002
-Latest block: 55956868
-Native USDC Balance: 41.796567066423713852
+Latest block: 56165330
 USDC Balance: 41.796567
 ```
 
@@ -70,7 +80,8 @@ arc-wallet-checker/
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
+
 
 
 
