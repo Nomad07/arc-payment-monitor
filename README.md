@@ -1,30 +1,21 @@
-# Arc Wallet Checker
+# Arc Payment Monitor
 
-A lightweight Python utility for checking wallet information on the **Arc network**.
-
-[![Python](https://img.shields.io/badge/Python-3.12+-blue?logo=python\&logoColor=white)](https://www.python.org/)
-[![Network](https://img.shields.io/badge/Network-Arc-black)](https://arc.network/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-## Overview
-
-**Arc Wallet Checker** is a simple command-line tool built with Python and `web3.py`.
-
-It connects directly to the Arc RPC and displays basic information about an Arc wallet, including its network status, chain ID, latest block, and USDC balance.
+A lightweight Python tool for monitoring USDC payments on the Arc network.
 
 ## Features
 
-* ✅ Validate an Arc wallet address
-* 🔗 Connect to the Arc RPC
-* 🌐 Display the Arc network
-* 🔢 Display the Arc chain ID
-* 📦 Display the latest block number
-* 💰 Check the USDC balance
-* ⚡ Lightweight command-line interface
+* Connect to the Arc network through RPC
+* Validate Arc wallet addresses
+* Display Arc chain ID
+* Display the latest block number
+* Display the current USDC balance
+* Monitor incoming and outgoing USDC payments
+* Show transaction details
+* Calculate total received and total sent
 
 ## Requirements
 
-* Python 3.12+
+* Python 3.10+
 * `web3.py`
 
 ## Installation
@@ -32,11 +23,11 @@ It connects directly to the Arc RPC and displays basic information about an Arc 
 Clone the repository:
 
 ```bash
-git clone https://github.com/Nomad07/arc-wallet-checker.git
-cd arc-wallet-checker
+git clone https://github.com/Nomad07/arc-payment-monitor.git
+cd arc-payment-monitor
 ```
 
-Install the required dependency:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -44,44 +35,35 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the application:
+Run the monitor:
 
 ```bash
 python main.py
 ```
 
-Enter your Arc wallet address when prompted.
+Enter an Arc wallet address when prompted.
 
-## Example
+The monitor displays the wallet balance and USDC payment activity on the Arc network.
 
-```text
-Arc Wallet Checker
-------------------
-Enter Arc wallet address: 0x...
+## Network
 
-Valid wallet address
-Connected to Arc
-Network: Arc
-Chain ID: 5042002
-Latest block: 56165330
-USDC Balance: 41.796567
-```
+The tool is currently configured for the Arc Testnet.
 
-## Project Structure
+* Network: Arc Testnet
+* Chain ID: 5042002
+* USDC: `0x3600000000000000000000000000000000000000`
 
-```text
-arc-wallet-checker/
-├── .gitignore
-├── LICENSE
-├── README.md
-├── main.py
-└── requirements.txt
-```
+## Project Status
+
+This project is under active development.
+
+Planned improvements include:
+
+* Real-time payment monitoring
+* New payment notifications
+* Improved transaction history
+* Additional payment statistics
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
-
-
-
+MIT License
