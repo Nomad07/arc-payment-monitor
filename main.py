@@ -1,4 +1,8 @@
+import sys
+import time
+
 from web3 import Web3
+
 
 RPC_URL = "https://rpc.testnet.arc.network"
 
@@ -17,17 +21,34 @@ TOKENS = {
     },
 }
 
+
 TRANSFER_TOPIC = Web3.keccak(
     text="Transfer(address,address,uint256)"
 ).hex()
 
-TEST_TRANSACTIONS = [
-    "0x031103c6bac8a20ec5497216f9f804281b4da70c3af3b6a86b5e303245ae5670",
-    "0xcc3f94da36a01aa363ca31e00dbb7553078da3665b472456336381a23a1c0584",
-    "0x05dc3dcc0ea559fe09efab8f7abb43c21196c1a7a49a4536c3a854add42fd45c",
-]
 
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
+
+
+BALANCE_ABI = [
+    {
+        "constant": True,
+        "inputs": [
+            {
+                "name": "account",
+                "type": "address",
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+            }
+        ],
+        "type": "function",
+    }
+]
 
 
 def check_address(address):
@@ -48,6 +69,41 @@ def get_token_by_address(contract_address):
     return None, None
 
 
+def get_token_balance(wallet_address, token_name):
+    token = TOKENS[token_name]
+
+    try:
+        contract = web3.eth.contract(
+            address=Web3.to_checksum_address(
+                token["address"]
+            ),
+            abi=BALANCE_ABI,
+        )
+
+        raw_balance = contract.functions.balanceOf(
+            wallet_address
+        ).call()
+
+        return raw_balance / (
+            10 ** token["decimals"]
+        )
+
+    except Exception:
+        return None
+
+
+def get_balances(wallet_address):
+    balances = {}
+
+    for name in TOKENS:
+        balances[name] = get_token_balance(
+            wallet_address,
+            name,
+        )
+
+    return balances
+
+
 def decode_transfer(log, wallet_address):
     if len(log["topics"]) < 3:
         return None
@@ -55,20 +111,29 @@ def decode_transfer(log, wallet_address):
     if log["topics"][0].hex() != TRANSFER_TOPIC:
         return None
 
-    token_name, token = get_token_by_address(log["address"])
+    token_name, token = get_token_by_address(
+        log["address"]
+    )
 
     if token is None:
         return None
 
-    from_address = decode_address(log["topics"][1])
-    to_address = decode_address(log["topics"][2])
+    from_address = decode_address(
+        log["topics"][1]
+    )
 
-    wallet_address = wallet_address.lower()
+    to_address = decode_address(
+        log["topics"][2]
+    )
 
-    if from_address.lower() == wallet_address:
+    wallet_lower = wallet_address.lower()
+
+    if from_address.lower() == wallet_lower:
         direction = "OUT"
-    elif to_address.lower() == wallet_address:
+
+    elif to_address.lower() == wallet_lower:
         direction = "IN"
+
     else:
         return None
 
@@ -90,145 +155,258 @@ def decode_transfer(log, wallet_address):
     }
 
 
-def check_transaction(tx_hash, wallet_address):
-    receipt = web3.eth.get_transaction_receipt(tx_hash)
+def process_transaction(tx_hash, wallet_address):
+    try:
+        receipt = web3.eth.get_transaction_receipt(
+            tx_hash
+        )
 
-    results = []
+    except Exception:
+        return []
+
+    payments = []
 
     for log in receipt.logs:
-        transfer = decode_transfer(
+        payment = decode_transfer(
             log,
             wallet_address,
         )
 
-        if transfer:
-            transfer["tx"] = tx_hash
-            transfer["block"] = receipt.blockNumber
-            results.append(transfer)
+        if payment:
+            payment["tx"] = tx_hash
+            payment["block"] = receipt.blockNumber
+            payments.append(payment)
 
-    return results
+    return payments
+
+
+def process_block(block_number, wallet_address):
+    try:
+        block = web3.eth.get_block(
+            block_number,
+            full_transactions=True,
+        )
+
+    except Exception:
+        return []
+
+    token_addresses = {
+        token["address"].lower()
+        for token in TOKENS.values()
+    }
+
+    payments = []
+
+    for transaction in block.transactions:
+        tx_to = transaction["to"]
+
+        if not tx_to:
+            continue
+
+        if tx_to.lower() not in token_addresses:
+            continue
+
+        tx_hash = transaction["hash"].hex()
+
+        detected = process_transaction(
+            tx_hash,
+            wallet_address,
+        )
+
+        payments.extend(detected)
+
+    return payments
+
+
+def print_payment(
+    payment,
+    wallet_address,
+):
+    print()
+    print("=" * 50)
+    print("NEW PAYMENT")
+    print("=" * 50)
+    print()
+
+    if payment["direction"] == "IN":
+        print(
+            f"IN   +{payment['amount']:.8f} "
+            f"{payment['token']}"
+        )
+
+    else:
+        print(
+            f"OUT  -{payment['amount']:.8f} "
+            f"{payment['token']}"
+        )
+
+    print()
+    print(f"From:  {payment['from']}")
+    print(f"To:    {payment['to']}")
+    print(f"Block: {payment['block']}")
+    print(f"Tx:    {payment['tx']}")
+
+    balance = get_token_balance(
+        wallet_address,
+        payment["token"],
+    )
+
+    if balance is not None:
+        print()
+        print(
+            f"Balance: {balance:.8f} "
+            f"{payment['token']}"
+        )
+
+    print()
+    print("=" * 50)
+
+
+def show_balances(wallet_address):
+    print()
+    print("Token Balances")
+    print("--------------")
+
+    balances = get_balances(wallet_address)
+
+    for name in TOKENS:
+        balance = balances[name]
+
+        if balance is None:
+            print(
+                f"{name}: unable to read balance"
+            )
+
+        else:
+            print(
+                f"{name}: {balance:.8f}"
+            )
+
+
+def show_configured_tokens():
+    print()
+    print("Configured Tokens")
+    print("-----------------")
+
+    for name, token in TOKENS.items():
+        print(
+            f"{name}: {token['address']}"
+        )
+
+
+def watch(wallet_address):
+    print()
+    print("Watching for new payments...")
+    print("Press Ctrl+C to stop.")
+    print()
+
+    last_block = web3.eth.block_number
+
+    processed_transactions = set()
+
+    while True:
+        try:
+            latest_block = web3.eth.block_number
+
+            if latest_block > last_block:
+
+                for block_number in range(
+                    last_block + 1,
+                    latest_block + 1,
+                ):
+
+                    payments = process_block(
+                        block_number,
+                        wallet_address,
+                    )
+
+                    for payment in payments:
+
+                        tx_hash = payment["tx"]
+
+                        if (
+                            tx_hash
+                            in processed_transactions
+                        ):
+                            continue
+
+                        processed_transactions.add(
+                            tx_hash
+                        )
+
+                        print_payment(
+                            payment,
+                            wallet_address,
+                        )
+
+                last_block = latest_block
+
+            time.sleep(3)
+
+        except KeyboardInterrupt:
+            print()
+            print("Monitor stopped.")
+            break
+
+        except Exception as error:
+            print()
+            print(
+                f"Monitor error: {error}"
+            )
+            print(
+                "Retrying in 5 seconds..."
+            )
+            time.sleep(5)
 
 
 def main():
     print("Arc Payment Monitor")
     print("-------------------")
 
-    address = input("Enter Arc wallet address: ")
+    address = input(
+        "Enter Arc wallet address: "
+    )
 
     if not check_address(address):
         print("Invalid wallet address")
         return
 
-    address = Web3.to_checksum_address(address)
+    address = Web3.to_checksum_address(
+        address
+    )
 
     print("Valid wallet address")
 
     if not web3.is_connected():
-        print("Could not connect to Arc RPC")
+        print(
+            "Could not connect to Arc RPC"
+        )
         return
 
     print("Connected to Arc")
 
+    chain_id = web3.eth.chain_id
+    latest_block = web3.eth.block_number
+
     print(f"Network: Arc")
-    print(f"Chain ID: {web3.eth.chain_id}")
-    print(f"Latest block: {web3.eth.block_number}")
+    print(f"Chain ID: {chain_id}")
+    print(
+        f"Latest block: {latest_block}"
+    )
 
-    print()
-    print("Token Balances")
-    print("-------------")
+    show_balances(address)
+    show_configured_tokens()
 
-    balance_abi = [
-        {
-            "constant": True,
-            "inputs": [
-                {
-                    "name": "account",
-                    "type": "address",
-                }
-            ],
-            "name": "balanceOf",
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256",
-                }
-            ],
-            "type": "function",
-        }
-    ]
+    if "--watch" in sys.argv:
+        watch(address)
 
-    for name, token in TOKENS.items():
-        try:
-            contract = web3.eth.contract(
-                address=Web3.to_checksum_address(
-                    token["address"]
-                ),
-                abi=balance_abi,
-            )
-
-            raw_balance = contract.functions.balanceOf(
-                address
-            ).call()
-
-            balance = raw_balance / (
-                10 ** token["decimals"]
-            )
-
-            print(f"{name}: {balance:.8f}")
-
-        except Exception as error:
-            print(f"{name}: unable to read balance")
-            print(error)
-
-    print()
-    print("Testing Payment Detection")
-    print("-------------------------")
-
-    payments = []
-
-    for tx_hash in TEST_TRANSACTIONS:
-        try:
-            detected = check_transaction(
-                tx_hash,
-                address,
-            )
-
-            payments.extend(detected)
-
-        except Exception as error:
-            print()
-            print(f"Could not read transaction:")
-            print(tx_hash)
-            print(error)
-
-    if not payments:
-        print("No matching payments found.")
     else:
-        for payment in payments:
-            print()
-
-            if payment["direction"] == "IN":
-                print(
-                    f"IN   +{payment['amount']:.8f} "
-                    f"{payment['token']}"
-                )
-                print(f"From: {payment['from']}")
-                print(f"To:   {payment['to']}")
-
-            else:
-                print(
-                    f"OUT  -{payment['amount']:.8f} "
-                    f"{payment['token']}"
-                )
-                print(f"From: {payment['from']}")
-                print(f"To:   {payment['to']}")
-
-            print(f"Block: {payment['block']}")
-            print(f"Tx:    {payment['tx']}")
-
-    print()
-    print("-------------------------")
-    print("Payment detection test complete.")
+        print()
+        print("Monitor ready.")
+        print(
+            "Run with --watch "
+            "to monitor new payments."
+        )
 
 
 if __name__ == "__main__":
