@@ -20,19 +20,21 @@ The monitor tracks incoming and outgoing transfers for USDC, EURC and cirBTC, di
 - Track session payment statistics
 - Count incoming and outgoing transfers
 - Calculate total received and total sent for each token
+- Web-based monitoring interface
 
 ## Supported Tokens
 
-| Token | Decimals | Contract |
-|---|---:|---|
-| USDC | 6 | `0x3600000000000000000000000000000000000000` |
-| EURC | 6 | `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a` |
-| cirBTC | 8 | `0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF` |
+| Token  | Decimals | Contract                                     |
+| ------- | -------: | -------------------------------------------- |
+| USDC    |        6 | `0x3600000000000000000000000000000000000000` |
+| EURC    |        6 | `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a` |
+| cirBTC  |        8 | `0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF` |
 
 ## Requirements
 
 - Python 3.10+
 - `web3.py`
+- `Flask` for the web interface
 
 ## Installation
 
@@ -50,6 +52,8 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+
+### Command Line Monitor
 
 Run the monitor:
 
@@ -99,6 +103,60 @@ The same monitoring process works for USDC, EURC and cirBTC.
 
 Press `Ctrl+C` to stop the monitor.
 
+## Web Interface
+
+Arc Payment Monitor also includes a lightweight web interface for monitoring payments through a browser.
+
+Start the web interface:
+
+```bash
+python web_gui.py
+```
+
+The interface runs on port `5000`.
+
+The web interface provides:
+
+- Arc network connection status
+- Wallet connection
+- Live token balances
+- Real-time payment detection
+- Incoming and outgoing payment information
+- Sender and recipient addresses
+- Block numbers
+- Transaction hashes
+- Session payment statistics
+
+The interface automatically refreshes the displayed data while monitoring is active.
+
+Example:
+
+```text
+Arc Payment Monitor
+
+Connected to Arc | Chain ID: 5042002
+
+Token Balances
+
+USDC
+201.79656700
+
+EURC
+224.00000000
+
+cirBTC
+0.00110000
+
+Live Payments
+
+IN +20.00000000 EURC
+
+From: 0x...
+To:   0x...
+Block: 56631945
+Tx: 0x...
+```
+
 ## Payment Statistics
 
 During a monitoring session, the tool tracks payment activity for each supported token.
@@ -127,7 +185,7 @@ Received:  0.00010000
 Sent:      0.00000000
 ```
 
-The statistics are displayed when new payments are detected and again when the monitoring session is stopped.
+The statistics are updated while the monitoring session is active.
 
 ## Network
 
@@ -151,6 +209,9 @@ The current version supports:
 - Token balance tracking
 - Transaction details
 - Session payment statistics
+- Browser-based monitoring interface
+
+The project is currently focused on reliable payment detection and a lightweight monitoring experience.
 
 More monitoring and analytics features may be added as the project develops.
 
