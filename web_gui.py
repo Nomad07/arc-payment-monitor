@@ -422,17 +422,11 @@ def monitor():
 
 HTML = """
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Arc Payment Monitor</title>
 
@@ -447,100 +441,138 @@ body {
     background: #0b1020;
     color: #f1f5f9;
     font-family: Arial, sans-serif;
+    font-size: 14px;
 }
 
 .container {
-    max-width: 1100px;
+    max-width: 1050px;
     margin: auto;
-    padding: 30px 20px;
+    padding: 16px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 14px;
 }
 
 h1 {
-    margin-bottom: 5px;
+    margin: 0;
+    font-size: 24px;
 }
 
 .subtitle {
     color: #94a3b8;
-    margin-bottom: 25px;
-}
-
-.panel {
-    background: #111827;
-    border: 1px solid #263244;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
+    margin-top: 4px;
+    font-size: 13px;
 }
 
 .status {
-    display: inline-block;
-    padding: 7px 12px;
-    border-radius: 20px;
+    padding: 7px 11px;
+    border-radius: 18px;
     background: #172033;
     color: #94a3b8;
-    margin-bottom: 10px;
+    white-space: nowrap;
+    font-size: 12px;
 }
 
 .connected {
     color: #4ade80;
 }
 
+.panel {
+    background: #111827;
+    border: 1px solid #263244;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+}
+
 input {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 8px;
+    padding: 9px 11px;
+    border-radius: 7px;
     border: 1px solid #334155;
     background: #0f172a;
     color: white;
+    outline: none;
 }
 
 button {
-    margin-top: 12px;
-    margin-right: 8px;
-    padding: 11px 18px;
+    padding: 9px 14px;
     border: 0;
-    border-radius: 8px;
+    border-radius: 7px;
     background: #2563eb;
     color: white;
     cursor: pointer;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 button:hover {
     background: #1d4ed8;
 }
 
+h2 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+
+/* BALANCES */
+
 .balances {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    gap: 10px;
 }
 
 .balance {
     background: #0f172a;
     border: 1px solid #263244;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 8px;
+    padding: 12px 14px;
 }
 
 .token {
     color: #94a3b8;
+    font-size: 12px;
 }
 
 .amount {
-    margin-top: 8px;
-    font-size: 24px;
+    margin-top: 4px;
+    font-size: 20px;
     font-weight: bold;
+}
+
+/* PAYMENTS */
+
+.payments-container {
+    max-height: 330px;
+    overflow-y: auto;
 }
 
 .payment {
     border-top: 1px solid #263244;
-    padding: 15px 0;
+    padding: 9px 0;
 }
 
 .payment:first-child {
     border-top: 0;
+    padding-top: 0;
 }
 
 .incoming {
@@ -553,31 +585,49 @@ button:hover {
 
 .details {
     color: #94a3b8;
-    font-size: 13px;
-    line-height: 1.7;
-    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.55;
+    margin-top: 4px;
     word-break: break-all;
 }
+
+/* STATISTICS */
 
 .stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    gap: 10px;
 }
 
 .stat {
     background: #0f172a;
-    border-radius: 10px;
-    padding: 18px;
+    border-radius: 8px;
+    padding: 12px;
     border: 1px solid #263244;
 }
 
 .stat-line {
     color: #94a3b8;
-    margin: 7px 0;
+    margin: 4px 0;
+    font-size: 12px;
 }
 
-@media (max-width: 700px) {
+/* SMALL SCREENS */
+
+@media (max-width: 750px) {
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .controls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .controls input {
+        grid-column: 1 / -1;
+    }
 
     .balances,
     .stats {
@@ -587,159 +637,137 @@ button:hover {
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>
-Arc Payment Monitor
-</h1>
+    <div class="header">
 
-<div class="subtitle">
-Real-time token payment monitoring on Arc Testnet
-</div>
+        <div>
+            <h1>Arc Payment Monitor</h1>
 
-<div class="panel">
+            <div class="subtitle">
+                Real-time token payment monitoring on Arc Testnet
+            </div>
+        </div>
 
-<div
-    id="status"
-    class="status"
->
-Not connected
-</div>
+        <div id="status" class="status">
+            Not connected
+        </div>
 
-<input
-    id="wallet"
-    placeholder="Enter Arc wallet address"
->
+    </div>
 
-<button onclick="connectWallet()">
-Connect Wallet
-</button>
 
-<button onclick="toggleMonitor()">
-<span id="monitorButton">
-Start Monitoring
-</span>
-</button>
+    <div class="panel">
 
-</div>
+        <div class="controls">
 
-<div class="panel">
+            <input
+                id="wallet"
+                placeholder="Enter Arc wallet address"
+            >
 
-<h2>
-Token Balances
-</h2>
+            <button onclick="connectWallet()">
+                Connect Wallet
+            </button>
 
-<div class="balances">
+            <button onclick="toggleMonitor()">
+                <span id="monitorButton">
+                    Start Monitoring
+                </span>
+            </button>
 
-<div class="balance">
+        </div>
 
-<div class="token">
-USDC
-</div>
+    </div>
 
-<div
-    id="usdc"
-    class="amount"
->
-0.00000000
-</div>
 
-</div>
+    <div class="panel">
 
-<div class="balance">
+        <h2>Token Balances</h2>
 
-<div class="token">
-EURC
-</div>
+        <div class="balances">
 
-<div
-    id="eurc"
-    class="amount"
->
-0.00000000
-</div>
+            <div class="balance">
+                <div class="token">USDC</div>
 
-</div>
+                <div id="usdc" class="amount">
+                    0.00000000
+                </div>
+            </div>
 
-<div class="balance">
+            <div class="balance">
+                <div class="token">EURC</div>
 
-<div class="token">
-cirBTC
-</div>
+                <div id="eurc" class="amount">
+                    0.00000000
+                </div>
+            </div>
 
-<div
-    id="cirbtc"
-    class="amount"
->
-0.00000000
-</div>
+            <div class="balance">
+                <div class="token">cirBTC</div>
 
-</div>
+                <div id="cirbtc" class="amount">
+                    0.00000000
+                </div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<div class="panel">
 
-<h2>
-Live Payments
-</h2>
+    <div class="panel">
 
-<div id="payments">
-No payments detected yet.
-</div>
+        <h2>Live Payments</h2>
 
-</div>
+        <div id="payments" class="payments-container">
+            No payments detected yet.
+        </div>
 
-<div class="panel">
+    </div>
 
-<h2>
-Session Statistics
-</h2>
 
-<div class="stats">
+    <div class="panel">
 
-<div class="stat">
+        <h2>Session Statistics</h2>
 
-<h3>
-USDC
-</h3>
+        <div class="stats">
 
-<div id="usdcStats"></div>
+            <div class="stat">
 
-</div>
+                <h3>USDC</h3>
 
-<div class="stat">
+                <div id="usdcStats"></div>
 
-<h3>
-EURC
-</h3>
+            </div>
 
-<div id="eurcStats"></div>
+
+            <div class="stat">
+
+                <h3>EURC</h3>
+
+                <div id="eurcStats"></div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <h3>cirBTC</h3>
+
+                <div id="cirbtcStats"></div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="stat">
-
-<h3>
-cirBTC
-</h3>
-
-<div id="cirbtcStats"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
 
 <script>
 
@@ -749,44 +777,31 @@ let monitoring = false;
 async function connectWallet() {
 
     const wallet =
-        document.getElementById(
-            "wallet"
-        ).value.trim();
+        document.getElementById("wallet").value.trim();
 
     const response =
-        await fetch(
-            "/connect",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-                body: JSON.stringify({
-                    wallet: wallet
-                })
-            }
-        );
+        await fetch("/connect", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                wallet: wallet
+            })
+        });
 
-    const data =
-        await response.json();
+    const data = await response.json();
 
     if (!data.success) {
-
         alert(data.error);
-
         return;
     }
 
-    document.getElementById(
-        "status"
-    ).innerText =
-        "● Connected to Arc | Chain ID: "
-        + data.chain_id;
+    document.getElementById("status").innerText =
+        "● Connected to Arc | Chain ID: " +
+        data.chain_id;
 
-    document.getElementById(
-        "status"
-    ).className =
+    document.getElementById("status").className =
         "status connected";
 
     updateData();
@@ -796,34 +811,23 @@ async function connectWallet() {
 async function toggleMonitor() {
 
     const endpoint =
-        monitoring
-        ? "/stop"
-        : "/start";
+        monitoring ? "/stop" : "/start";
 
     const response =
-        await fetch(
-            endpoint,
-            {
-                method: "POST"
-            }
-        );
+        await fetch(endpoint, {
+            method: "POST"
+        });
 
-    const data =
-        await response.json();
+    const data = await response.json();
 
     if (data.error) {
-
         alert(data.error);
-
         return;
     }
 
-    monitoring =
-        data.running;
+    monitoring = data.running;
 
-    document.getElementById(
-        "monitorButton"
-    ).innerText =
+    document.getElementById("monitorButton").innerText =
         monitoring
         ? "Stop Monitoring"
         : "Start Monitoring";
@@ -833,42 +837,25 @@ async function toggleMonitor() {
 async function updateData() {
 
     const response =
-        await fetch(
-            "/data"
-        );
+        await fetch("/data");
 
     const data =
         await response.json();
 
     if (!data.wallet) {
-
         return;
     }
 
-    document.getElementById(
-        "usdc"
-    ).innerText =
-        formatNumber(
-            data.balances.USDC
-        );
+    document.getElementById("usdc").innerText =
+        formatNumber(data.balances.USDC);
 
-    document.getElementById(
-        "eurc"
-    ).innerText =
-        formatNumber(
-            data.balances.EURC
-        );
+    document.getElementById("eurc").innerText =
+        formatNumber(data.balances.EURC);
 
-    document.getElementById(
-        "cirbtc"
-    ).innerText =
-        formatNumber(
-            data.balances.cirBTC
-        );
+    document.getElementById("cirbtc").innerText =
+        formatNumber(data.balances.cirBTC);
 
-    renderPayments(
-        data.payments
-    );
+    renderPayments(data.payments);
 
     renderStats(
         "usdcStats",
@@ -893,7 +880,6 @@ function formatNumber(value) {
         value === null ||
         value === undefined
     ) {
-
         return "Error";
     }
 
@@ -901,14 +887,10 @@ function formatNumber(value) {
 }
 
 
-function renderPayments(
-    payments
-) {
+function renderPayments(payments) {
 
     const container =
-        document.getElementById(
-            "payments"
-        );
+        document.getElementById("payments");
 
     if (!payments.length) {
 
@@ -919,20 +901,19 @@ function renderPayments(
     }
 
     container.innerHTML =
-        payments.map(
-            payment => {
+        payments.map(payment => {
 
-                const className =
-                    payment.direction === "IN"
-                    ? "incoming"
-                    : "outgoing";
+            const className =
+                payment.direction === "IN"
+                ? "incoming"
+                : "outgoing";
 
-                const sign =
-                    payment.direction === "IN"
-                    ? "+"
-                    : "-";
+            const sign =
+                payment.direction === "IN"
+                ? "+"
+                : "-";
 
-                return `
+            return `
 <div class="payment">
 
 <strong class="${className}">
@@ -942,39 +923,22 @@ ${payment.token}
 </strong>
 
 <div class="details">
-
-From: ${payment.from}
-
-<br>
-
-To: ${payment.to}
-
-<br>
-
-Block: ${payment.block}
-
-<br>
-
+From: ${payment.from}<br>
+To: ${payment.to}<br>
+Block: ${payment.block}<br>
 Tx: ${payment.tx}
-
 </div>
 
 </div>
 `;
 
-            }
-        ).join("");
+        }).join("");
 }
 
 
-function renderStats(
-    elementId,
-    stats
-) {
+function renderStats(elementId, stats) {
 
-    document.getElementById(
-        elementId
-    ).innerHTML = `
+    document.getElementById(elementId).innerHTML = `
 
 <div class="stat-line">
 Incoming: ${stats.incoming}
@@ -996,17 +960,14 @@ Sent: ${formatNumber(stats.sent)}
 }
 
 
-setInterval(
-    updateData,
-    3000
-);
+setInterval(updateData, 3000);
 
 </script>
 
 </body>
-
 </html>
 """
+
 
 
 @app.route("/")
