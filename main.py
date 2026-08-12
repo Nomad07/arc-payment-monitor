@@ -27,7 +27,9 @@ TRANSFER_TOPIC = Web3.keccak(
 ).hex()
 
 
-web3 = Web3(Web3.HTTPProvider(RPC_URL))
+web3 = Web3(
+    Web3.HTTPProvider(RPC_URL)
+)
 
 
 BALANCE_ABI = [
@@ -102,6 +104,57 @@ def get_balances(wallet_address):
         )
 
     return balances
+
+
+def create_statistics():
+    statistics = {}
+
+    for name in TOKENS:
+        statistics[name] = {
+            "incoming_count": 0,
+            "outgoing_count": 0,
+            "received": 0.0,
+            "sent": 0.0,
+        }
+
+    return statistics
+
+
+def update_statistics(statistics, payment):
+    token = payment["token"]
+    amount = payment["amount"]
+
+    if payment["direction"] == "IN":
+        statistics[token]["incoming_count"] += 1
+        statistics[token]["received"] += amount
+
+    else:
+        statistics[token]["outgoing_count"] += 1
+        statistics[token]["sent"] += amount
+
+
+def print_statistics(statistics):
+    print()
+    print("Session Statistics")
+    print("------------------")
+
+    for name in TOKENS:
+        stats = statistics[name]
+
+        print()
+        print(name)
+        print(
+            f"  Incoming:  {stats['incoming_count']}"
+        )
+        print(
+            f"  Outgoing:  {stats['outgoing_count']}"
+        )
+        print(
+            f"  Received:  {stats['received']:.8f}"
+        )
+        print(
+            f"  Sent:      {stats['sent']:.8f}"
+        )
 
 
 def decode_transfer(log, wallet_address):
@@ -221,7 +274,13 @@ def process_block(block_number, wallet_address):
 def print_payment(
     payment,
     wallet_address,
+    statistics,
 ):
+    update_statistics(
+        statistics,
+        payment,
+    )
+
     print()
     print("=" * 50)
     print("NEW PAYMENT")
@@ -257,6 +316,9 @@ def print_payment(
             f"Balance: {balance:.8f} "
             f"{payment['token']}"
         )
+
+    print()
+    print_statistics(statistics)
 
     print()
     print("=" * 50)
@@ -303,9 +365,10 @@ def watch(wallet_address):
     last_block = web3.eth.block_number
 
     processed_transactions = set()
+    statistics = create_statistics()
 
-    while True:
-        try:
+    try:
+        while True:
             latest_block = web3.eth.block_number
 
             if latest_block > last_block:
@@ -321,7 +384,6 @@ def watch(wallet_address):
                     )
 
                     for payment in payments:
-
                         tx_hash = payment["tx"]
 
                         if (
@@ -337,26 +399,21 @@ def watch(wallet_address):
                         print_payment(
                             payment,
                             wallet_address,
+                            statistics,
                         )
 
                 last_block = latest_block
 
             time.sleep(3)
 
-        except KeyboardInterrupt:
-            print()
-            print("Monitor stopped.")
-            break
+    except KeyboardInterrupt:
+        print()
+        print()
+        print("Monitor stopped.")
 
-        except Exception as error:
-            print()
-            print(
-                f"Monitor error: {error}"
-            )
-            print(
-                "Retrying in 5 seconds..."
-            )
-            time.sleep(5)
+        print_statistics(
+            statistics
+        )
 
 
 def main():
