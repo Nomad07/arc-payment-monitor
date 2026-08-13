@@ -1,8 +1,8 @@
 # Arc Payment Monitor
 
-A lightweight Python tool for monitoring token payments on the Arc network.
+Real-time token payment monitoring for the Arc network.
 
-The monitor tracks incoming and outgoing transfers for USDC, EURC and cirBTC, displays token balances, and can watch the Arc blockchain for new payments in real time.
+The monitor tracks incoming and outgoing transfers for USDC, EURC and cirBTC, displays token balances, and watches the Arc blockchain for new payments in real time.
 
 ## Features
 
@@ -20,15 +20,15 @@ The monitor tracks incoming and outgoing transfers for USDC, EURC and cirBTC, di
 - Track session payment statistics
 - Count incoming and outgoing transfers
 - Calculate total received and total sent for each token
-- Web-based monitoring interface
+- Browser-based monitoring interface
 
 ## Supported Tokens
 
-| Token  | Decimals | Contract                                     |
-| ------- | -------: | -------------------------------------------- |
-| USDC    |        6 | `0x3600000000000000000000000000000000000000` |
-| EURC    |        6 | `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a` |
-| cirBTC  |        8 | `0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF` |
+| Token | Decimals | Contract |
+| --- | ---: | --- |
+| USDC | 6 | `0x3600000000000000000000000000000000000000` |
+| EURC | 6 | `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a` |
+| cirBTC | 8 | `0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF` |
 
 ## Requirements
 
@@ -40,16 +40,12 @@ The monitor tracks incoming and outgoing transfers for USDC, EURC and cirBTC, di
 
 Clone the repository:
 
-```bash
-git clone https://github.com/Nomad07/arc-payment-monitor.git
-cd arc-payment-monitor
-```
+    git clone https://github.com/Nomad07/arc-payment-monitor.git
+    cd arc-payment-monitor
 
 Install dependencies:
 
-```bash
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
 
 ## Usage
 
@@ -57,9 +53,7 @@ pip install -r requirements.txt
 
 Run the monitor:
 
-```bash
-python main.py
-```
+    python main.py
 
 Enter an Arc wallet address when prompted.
 
@@ -73,31 +67,27 @@ The monitor displays:
 
 To monitor new payments in real time, run:
 
-```bash
-python main.py --watch
-```
+    python main.py --watch
 
 The monitor will wait for new token transfers and display them as they are detected.
 
 Example:
 
-```text
-Watching for new payments...
-Press Ctrl+C to stop.
+    Watching for new payments...
+    Press Ctrl+C to stop.
 
-==================================================
-NEW PAYMENT
-==================================================
+    ==================================================
+    NEW PAYMENT
+    ==================================================
 
-IN   +20.00000000 USDC
+    IN   +20.00000000 USDC
 
-From:  0x...
-To:    0x...
-Block: 56615623
-Tx:    0x...
+    From:  0x...
+    To:    0x...
+    Block: 56615623
+    Tx:    0x...
 
-Balance: 141.79656700 USDC
-```
+    Balance: 141.79656700 USDC
 
 The same monitoring process works for USDC, EURC and cirBTC.
 
@@ -105,13 +95,11 @@ Press `Ctrl+C` to stop the monitor.
 
 ## Web Interface
 
-Arc Payment Monitor also includes a lightweight web interface for monitoring payments through a browser.
+Arc Payment Monitor also includes a browser-based interface for monitoring payments.
 
 Start the web interface:
 
-```bash
-python web_gui.py
-```
+    python web_gui.py
 
 The interface runs on port `5000`.
 
@@ -131,31 +119,29 @@ The interface automatically refreshes the displayed data while monitoring is act
 
 Example:
 
-```text
-Arc Payment Monitor
+    Arc Payment Monitor
 
-Connected to Arc | Chain ID: 5042002
+    Connected to Arc | Chain ID: 5042002
 
-Token Balances
+    Token Balances
 
-USDC
-201.79656700
+    USDC
+    201.79656700
 
-EURC
-224.00000000
+    EURC
+    224.00000000
 
-cirBTC
-0.00110000
+    cirBTC
+    0.00110000
 
-Live Payments
+    Live Payments
 
-IN +20.00000000 EURC
+    IN +20.00000000 EURC
 
-From: 0x...
-To:   0x...
-Block: 56631945
-Tx: 0x...
-```
+    From: 0x...
+    To:   0x...
+    Block: 56631945
+    Tx: 0x...
 
 ## Payment Statistics
 
@@ -163,27 +149,25 @@ During a monitoring session, the tool tracks payment activity for each supported
 
 Example:
 
-```text
-Session Statistics
+    Session Statistics
 
-USDC
-Incoming:  1
-Outgoing:  0
-Received:  20.00000000
-Sent:      0.00000000
+    USDC
+    Incoming:  1
+    Outgoing:  0
+    Received:  20.00000000
+    Sent:      0.00000000
 
-EURC
-Incoming:  1
-Outgoing:  0
-Received:  20.00000000
-Sent:      0.00000000
+    EURC
+    Incoming:  1
+    Outgoing:  0
+    Received:  20.00000000
+    Sent:      0.00000000
 
-cirBTC
-Incoming:  1
-Outgoing:  0
-Received:  0.00010000
-Sent:      0.00000000
-```
+    cirBTC
+    Incoming:  1
+    Outgoing:  0
+    Received:  0.00010000
+    Sent:      0.00000000
 
 The statistics are updated while the monitoring session is active.
 
@@ -197,7 +181,7 @@ The tool is currently configured for the Arc Testnet.
 
 ## Project Status
 
-Arc Payment Monitor is an active project focused on simple on-chain payment monitoring for the Arc network.
+Arc Payment Monitor is an active project focused on on-chain payment monitoring for the Arc network.
 
 The current version supports:
 
@@ -211,7 +195,7 @@ The current version supports:
 - Session payment statistics
 - Browser-based monitoring interface
 
-The project is currently focused on reliable payment detection and a lightweight monitoring experience.
+The project is currently focused on reliable payment detection and a straightforward monitoring experience.
 
 More monitoring and analytics features may be added as the project develops.
 
