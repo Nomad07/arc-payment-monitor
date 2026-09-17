@@ -219,7 +219,7 @@ def process_transaction(tx_hash, wallet_address):
 
     payments = []
 
-    for log in receipt.logs:
+    for log_index, log in enumerate(receipt.logs):
         payment = decode_transfer(
             log,
             wallet_address,
@@ -228,6 +228,7 @@ def process_transaction(tx_hash, wallet_address):
         if payment:
             payment["tx"] = tx_hash
             payment["block"] = receipt.blockNumber
+            payment["log_index"] = log_index
             payments.append(payment)
 
     return payments
@@ -384,16 +385,19 @@ def watch(wallet_address):
                     )
 
                     for payment in payments:
-                        tx_hash = payment["tx"]
+                        payment_key = (
+                            payment["tx"],
+                            payment["log_index"],
+                        )
 
                         if (
-                            tx_hash
+                            payment_key
                             in processed_transactions
                         ):
                             continue
 
                         processed_transactions.add(
-                            tx_hash
+                            payment_key
                         )
 
                         print_payment(
